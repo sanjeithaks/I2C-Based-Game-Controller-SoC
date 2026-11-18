@@ -1,0 +1,14 @@
+# Simulation build products
+sim/*.out
+sim/*.lxt
+sim/*.lxt2
+sim/*.vzt
+sim/*.fst
+
+# Python
+__pycache__/
+*.pyc
+
+# Editor / OS
+.DS_Store
+Thumbs.db

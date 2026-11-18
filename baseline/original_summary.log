@@ -1,0 +1,5 @@
+﻿VCD info: dumpfile dump_explore.vcd opened for output.
+time=1252000 apb_done=0 data_out=01010110 button_status=01010110
+master state=0 bit_cnt=0 shift_reg=01010110 apb_data_out=01010110
+slave bit_cnt=7 data_out=10101100 sda_drive=1 sda_reg=0
+tb_explore.v:38: $finish called at 1252000 (1ps)

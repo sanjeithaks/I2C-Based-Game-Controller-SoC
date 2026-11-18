@@ -1,0 +1,21 @@
+﻿VCD info: dumpfile dump.vcd opened for output.
+================================================================
+ I2C Game Controller SoC - self-checking simulation
+================================================================
+[26000] Reset OK: SCL=1, SDA=1 (released, pulled high), apb_done=0
+[65000] START condition detected (SDA fell while SCL high)
+[1605000] STOP condition detected (SDA rose while SCL high)
+[1617000] read 0x42 pattern A: transaction complete after 19 SCL edges, ack=0, rx=10101100
+PASS [read 0x42 pattern A]: button_status = 10101100 (0xac)
+[1635000] START condition detected (SDA fell while SCL high)
+[3175000] STOP condition detected (SDA rose while SCL high)
+[3187000] read 0x42 pattern B: transaction complete after 19 SCL edges, ack=0, rx=00111100
+PASS [read 0x42 pattern B]: button_status = 00111100 (0x3c)
+[3205000] START condition detected (SDA fell while SCL high)
+[4025000] STOP condition detected (SDA rose while SCL high)
+[4037000] read 0x21 (unaddressed): transaction complete after 10 SCL edges, ack=1, rx=00000000
+PASS [read 0x21 (unaddressed)]: button_status = 00111100 (0x3c)
+----------------------------------------------------------------
+RESULT: ALL CHECKS PASSED
+================================================================
+testbench/tb_soc_top.v:226: $finish called at 4037000 (1ps)
