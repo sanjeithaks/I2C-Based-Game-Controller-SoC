@@ -546,13 +546,21 @@ gtkwave sim/dump.vcd
 
 ### 18.2 Xilinx Vivado
 
+The quickest route is the supplied project-recreation script (choose the part for your board):
+
+```tcl
+vivado -mode batch -source tools/create_vivado_project.tcl -tclargs xc7a35tcpg236-1
+```
+
+Then open `vivado/i2c_game_controller.xpr` and run the simulation. Manual steps are equivalent:
+
 1. Create an RTL project and add `rtl/soc_top.v`, `rtl/i2c_master_apb.v`, `rtl/i2c_game_controller_slave.v`.
 2. Add `testbench/tb_soc_top.v` as a simulation source and set `tb_soc_top` as the simulation top.
 3. Add `constraints/soc_top.xdc` and complete the board pin assignments for `clk`, `reset`, `apb_start`, `slave_addr`, `controller_buttons`, `button_status`, `scl` and `sda`.
 4. Run **Behavioral Simulation**; the Tcl console should print `RESULT: ALL CHECKS PASSED`.
 5. Run **Synthesis** / **Implementation** and inspect the utilization and timing reports for your exact part.
 
-No Vivado project file (`.xpr`) is shipped because the original repository did not contain one; creating the project from the three RTL files and one testbench is deterministic.
+No Vivado project file (`.xpr`) is committed because the original repository did not contain one; the script generates it deterministically from the three RTL files and one testbench.
 
 ---
 
