@@ -120,7 +120,7 @@ The host presents a 7-bit address and pulses `apb_start`. The master performs a 
 | master | `apb_data_out[7:0]` | `button_status[7:0]` | Received button state |
 | controller | `controller_buttons[7:0]` | slave → `button_state` | Button pattern to transmit |
 
-**Clock domains.** Everything is synchronous to `clk`. The master generates SCL by dividing the system clock (one SCL bit cell = 8 `clk` cycles), so SCL changes only on `clk` edges. The slave double-registers SCL/SDA and runs entirely on `clk`; there is no gated clock and no second clock domain in the RTL (the original project used SCL as a clock — see Section 16).
+**Clock domains.** Everything is synchronous to `clk`. The master generates SCL by dividing the system clock (one SCL bit cell = 8 `clk` cycles), so SCL changes only on `clk` edges. The slave synchronises SCL/SDA through a register chain, derives rising/falling/START/STOP events from edge history, and runs entirely on `clk`; there is no gated clock and no second clock domain in the RTL (the original project used SCL as a clock — see Section 16).
 
 ---
 
@@ -139,6 +139,8 @@ I2C-Based-Game-Controller-SoC/
 │
 ├── constraints/
 │   └── soc_top.xdc                   # clock constraint + SDA/open-drain note
+│
+├── baseline/                         # original-RTL baseline logs (evidence)
 │
 ├── docs/
 │   ├── architecture/                 # architecture + FSM diagrams (PNG)
@@ -235,7 +237,7 @@ This keeps the block easy to attach to a real APB peripheral: a thin wrapper can
 | `STOP` | 6 | SDA low, raise SCL, release SDA → STOP | → `DONE` |
 | `DONE` | 7 | Pulse `apb_done` for one clock | → `IDLE` |
 
-Each bit is executed in four phases per half-period structure (`PH_FALL`, `PH_DRIVE`, `PH_LOW2`, `PH_LOW3`, `PH_RISE`, `PH_HIGH2`, `PH_HIGH3`, `PH_SAMPLE`), giving one full SCL period per eight `clk` cycles and guaranteeing that SDA only changes while SCL is low.
+Each bit is executed in eight clock phases — four while SCL is low (`PH_FALL`, `PH_DRIVE`, `PH_LOW2`, `PH_LOW3`) and four while it is high (`PH_RISE`, `PH_HIGH2`, `PH_HIGH3`, `PH_SAMPLE`) — giving one full SCL period per eight `clk` cycles and guaranteeing that SDA only changes while SCL is low.
 
 ![Master FSM](docs/architecture/fsm_master.png)
 
@@ -389,7 +391,7 @@ Timestamps are printed with 1 ps precision: `1617000` = **1.617 µs**.
 | Data for pattern A | `1010_1100` = `0xAC` |
 | Data for pattern B | `0011_1100` = `0x3C` |
 | NACK from unaddressed slave | `1`, data output unchanged (`0x3C`) |
-| `apb_start` → `apb_done` | 65 ns → 1617 ns = **1.552 µs** (155 clock cycles at 100 MHz) |
+| `apb_start` → `apb_done` | 50 ns → 1615 ns = **1.565 µs** (156.5 clock cycles at 100 MHz) |
 | SCL edges per successful read | **19** |
 | SCL period / frequency in this testbench | 80 ns / 12.5 MHz (functional rate, not I2C-spec) |
 
